@@ -10,7 +10,7 @@ export const userToken = (req,res,next) => {
             return res.status(403).json({message: "Token not provided"});
         }
         jwt.verify(token,process.env.USER_JWT,(err,decode)=>{
-            if(error){
+            if(err){
                 res.status(401).json({message:"unauthorized"})
             }
             req.email = decode.email;
