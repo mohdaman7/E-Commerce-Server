@@ -10,7 +10,7 @@ const route = express.Router()
 
 //products
 
-route.use(usertocken)
+route.use(userToken)
 route.get('/products',TryCatchMiddleware(viewproduct))
 
 route.get('/products/:id',TryCatchMiddleware(productById))

@@ -1,6 +1,6 @@
-import User from "../models/userModel";
-import Products from "../models/productsModel";
-import Cart from "../models/cartModel";
+import User from "../models/userModel.js";
+import products from "../models/productsModel.js";
+import Cart from "../models/cartModel.js";
 
 export const addToCart = async (req, res) => {
   const userId = req.params.userId;

@@ -1,14 +1,14 @@
 import Razorpay from "razorpay";
 import dotenv from "dotenv";
 import User from "../models/userModel.js";
-import Orders from "../models/orderModel";
+import Orders from "../models/orderModel.js";
 import crypto from "crypto";
 import Cart from "../models/cartModel.js";
 
 dotenv.config();
 
 const razorpay = new Razorpay({
-  key_id: process.env.Razorpay_key_id,
+  key_id: Date.now,
   key_secret: process.env.Razorpay_key_secret,
 });
 
