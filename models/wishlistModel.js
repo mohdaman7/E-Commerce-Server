@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Products from "./productsModel";
+import Products from "./productsModel.js";
 
 const wishlistSchema = mongoose.Schema({
     userId:{

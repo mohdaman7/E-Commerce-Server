@@ -1,77 +1,78 @@
-import User from '../models/userModel' 
-import express from 'express'
-import UserAuthJoi from '../validation/Userauthjoi'
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken'
+import User from "../models/userModel.js";
+import usereauthjoi from "../validation/Userauthjoi.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-const app = express();
-app.use(express.json())
+export const register = async (req, res, next) => {
+  const { value, error } = usereauthjoi.validate(req.body);
+  if (error) {
+    return res.status(400).json({ messege: "found validation error" });
+  }
 
-export const signup = async (req, res, next) => {
-    try {
-      // collect value in body
-      const checkJoi = await UserAuthJoi.validateAsync(req.body);
-      // Checking if this email already exists
-      const existsUser = await User.findOne({ email: checkJoi.email });
-      if (existsUser) {
-        return res.status(409).json({ message: "Email is already registered!" });
-      }
-  
-      //Hashing Password
-      const hashedPassword = bcrypt.hashSync(checkJoi.password, 10);
-  
-      //Add new user
-      const newUser = new User({
-        username: checkJoi.username,
-        email: checkJoi.email,
-        password: hashedPassword,
-      });
-  
-      //Save user
-      await newUser.save();
-  
-      //send response
-      return res.status(201).json({ message: "User created successfully", user: newUser });
-    } catch (error) {
-      // send serve error response
-     return res.status(200).json({ message: "Server error" });
-      next(error);
+  const { username, email, password } = value;
+  try {
+    const isExcistinguser = await User.findOne({ email: email });
+
+    if (isExcistinguser) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "email already taken!" });
     }
+
+    const hashedpassword = await bcryptjs.hash(password, 10);
+
+    const newuser = new User({
+      username: username,
+      image: req.cloudinaryImageUrl,
+      email: email,
+      password: hashedpassword,
+    });
+
+    await newuser.save();
+
+    return res
+      .status(201)
+      .json({
+        status: "success",
+        message: "User registered successfully",
+        data: newuser,
+      });
+  } catch (error) {
+    res.status(500).json({ messege: "internel server error" });
+  }
 };
 
+//login session
 export const login = async (req, res, next) => {
-    try {
-      //collect data in body
-      const { email, password } = req.body;
-      // check email found or not found
-      const user = await User.findOne({ email:email });
-       // admin blocking checking
-       if(user.isDeleted === true ) return res.status(210).json({message:"Admin Blocked"});
-       if (!user) {
-        // user not found response send
-        return res.status(230).json({ message: "User not found" });
-      }
-  
-      // check match password
-      const passwordMatch = bcrypt.compareSync(password, user.password);
-  
-      // check invalid or valid
-      if (!passwordMatch) {
-        return res.status(401).json({ message: "Invalid password" });
-      }
-      //jwt setting
-      const token = jwt.sign({ id: user._id }, process.env.USER_JWT);
-      const { password: hashedPassword, ...data } = user._doc;
-      const expiryDate = new Date(Date.now() + 60 * 1000);
-  
-      //cookie setting
-      res
-        .cookie("Access_Token", token, { httpOnly: true, expire: expiryDate })
-        .status(200)
-        .json({message:'User Login success fully',user:data , token});
-    } catch (error) {
-      // send response server error
-      res.status(500).json({ message: "Server error" });
-      next(error);
+  const { email, password } = req.body;
+  try {
+    const isuservalid = await User.findOne({ email });
+
+    console.log(password, "this login achievedlkjlkj");
+
+    if (!isuservalid) {
+      return res.status(404).json({ error: "user not found" });
     }
-  };
+
+    const validPass = bcryptjs.compareSync(password, isuservalid.password);
+
+    if (!validPass) {
+      return res.status(404).json({ error: "wrong credential" });
+    }
+
+    //jwt setting
+    const tocken = jwt.sign({ id: isuservalid._id }, process.env.JWT_SECRET);
+    const { password: hashedpassword, ...data } = isuservalid._doc;
+    const expairyDate = new Date(Date.now() + 60 * 1000);
+
+    //cookie setting
+
+    res
+      .cookie("Access token", tocken, { httpOnly: true, expire: expairyDate })
+      .status(200)
+      .json({ messege: "user login success fully", user: data, tocken });
+  } catch (error) {
+    res.status(500).json({ error: "internel server error" });
+    next(error);
+  }
+};

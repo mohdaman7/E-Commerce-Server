@@ -1,16 +1,19 @@
 import express from 'express';
-import { config } from 'dotenv';
 import mongoose from 'mongoose';
-
-
-
-config();
+import authRoutes from './routes/authRoutes';
+import dotenv from 'dotenv';
+import path from 'path';
+import productRoutes from './routes/productRoutes'
 
 const PORT = process.env.PORT || 3000;
-const DB = process.env.DB;
-const app = express(express.json());
+const app=express()
+app.use(express.json())
 
-mongoose.connect(DB)
+app.use("/api/users",authRoutes)
+
+app.use(express.static(__dirname))
+
+mongoose.connect('mongodb://localhost:27017/testdb')
 .then(()=>console.log("DB Connected"))
 .catch((err) => console.log(err))
 
