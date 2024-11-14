@@ -1,7 +1,8 @@
 import User from "../models/userModel.js";
 import usereauthjoi from "../validation/Userauthjoi.js";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcrypt";
 import jwt from "jsonwebtoken";
+
 
 export const register = async (req, res, next) => {
   const { value, error } = usereauthjoi.validate(req.body);
@@ -10,6 +11,7 @@ export const register = async (req, res, next) => {
   }
 
   const { username, email, password } = value;
+  console.log(username,email)
   try {
     const isExcistinguser = await User.findOne({ email: email });
 
@@ -39,6 +41,7 @@ export const register = async (req, res, next) => {
       });
   } catch (error) {
     res.status(500).json({ messege: "internel server error" });
+    console.log(error)
   }
 };
 
@@ -46,33 +49,34 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    const isuservalid = await User.findOne({ email });
+    const isUserValid = await User.findOne({ email });
 
-    console.log(password, "this login achievedlkjlkj");
+    console.log(password, email, "this login achieved");
 
-    if (!isuservalid) {
-      return res.status(404).json({ error: "user not found" });
+    if (!isUserValid) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    const validPass = bcryptjs.compareSync(password, isuservalid.password);
+    const validPass = bcryptjs.compareSync(password, isUserValid.password);
 
     if (!validPass) {
-      return res.status(404).json({ error: "wrong credential" });
+      return res.status(404).json({ error: "Wrong credentials" });
     }
 
-    //jwt setting
-    const tocken = jwt.sign({ id: isuservalid._id }, process.env.JWT_SECRET);
-    const { password: hashedpassword, ...data } = isuservalid._doc;
-    const expairyDate = new Date(Date.now() + 60 * 1000);
+    // JWT setting
+    const token = jwt.sign({ id: isUserValid._id }, process.env.JWT_SECRET);
+    const { password: hashedPassword, ...data } = isUserValid._doc;
+    const expiryDate = new Date(Date.now() + 60 * 1000);
 
-    //cookie setting
-
+    // Cookie setting
     res
-      .cookie("Access token", tocken, { httpOnly: true, expire: expairyDate })
+      .cookie("access_token", token, { httpOnly: true, expires: expiryDate })
       .status(200)
-      .json({ messege: "user login success fully", user: data, tocken });
+      .json({ message: "User logged in successfully", user: data, token });
   } catch (error) {
-    res.status(500).json({ error: "internel server error" });
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
     next(error);
   }
 };
+

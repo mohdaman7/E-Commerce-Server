@@ -1,6 +1,6 @@
 import products from "../models/productsModel.js";
 import wishlist from '../models/wishlistModel.js'
-import userModel from '../models/userModel.js';
+import User from '../models/userModel.js';
 
 
 

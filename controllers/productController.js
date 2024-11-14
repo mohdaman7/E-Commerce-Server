@@ -37,7 +37,7 @@ export const productBycategory = async (req, res) => {
         { title: { $regex: new RegExp(categoryname, "i") } },
       ],
     })
-    .select("title category price");
+    
 
   if (!product) {
     return res.status(404).json({ messege: "item not found" });
