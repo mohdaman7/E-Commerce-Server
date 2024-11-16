@@ -28,9 +28,9 @@ app.use('/api/users', productRoutes);
 
 app.use(express.static(__dirname));
 
-// app.use('/', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'index.html'));
-// });
+app.use('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 mongoose.connect('mongodb://localhost:27017/test')
     .then(() => console.log('DB connected successfully'))

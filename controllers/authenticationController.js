@@ -11,7 +11,7 @@ export const register = async (req, res, next) => {
   }
 
   const { username, email, password } = value;
-  console.log(username,email)
+  // console.log(username,email)
   try {
     const isExcistinguser = await User.findOne({ email: email });
 
@@ -51,7 +51,7 @@ export const login = async (req, res, next) => {
   try {
     const isUserValid = await User.findOne({ email });
 
-    console.log(password, email, "this login achieved");
+    // console.log(password, email, "this login achieved");
 
     if (!isUserValid) {
       return res.status(404).json({ error: "User not found" });

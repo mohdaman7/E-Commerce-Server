@@ -17,7 +17,7 @@ route.get('/products/:id',TryCatchMiddleware(productById))
 route.get('/products/category/:categoryname',TryCatchMiddleware(productBycategory))
 
 //cart route
-route.get('/:id/cart',TryCatchMiddleware(viewCart))
+route.get('/:id/cart',TryCatchMiddleware(viewCart)) //userId
 route.post('/:userId/cart/:productId',TryCatchMiddleware(addToCart))
 route.patch('/:userId/cart/:id/increment',TryCatchMiddleware(incrementCartItemqunity))
 route.put('/:userId/cart/:id/decrement',TryCatchMiddleware(decrementCartItemquntity))
@@ -32,6 +32,6 @@ route.delete('/:userId/wishlist/:productId/remove',TryCatchMiddleware(removeWish
 //payment route
 route.post('/payment/:id',TryCatchMiddleware(payment))
 route.post('/verifypayment',TryCatchMiddleware(verifyPayment))
-route.get('/:userId/orders',TryCatchMiddleware(orderbyid))
+route.get('/:userId/orders',TryCatchMiddleware(orderbyid)) 
 
 export default route
