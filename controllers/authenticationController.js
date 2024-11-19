@@ -21,7 +21,7 @@ export const register = async (req, res, next) => {
         .json({ status: "error", message: "email already taken!" });
     }
 
-    const hashedpassword = await bcryptjs.hash(password, 10);
+    const hashedpassword = await bcryptjs.hash(password,10);
 
     const newuser = new User({
       username: username,
@@ -72,7 +72,7 @@ export const login = async (req, res, next) => {
     res
       .cookie("access_token", token, { httpOnly: true, expires: expiryDate })
       .status(200)
-      .json({ message: "User logged in successfully", user: data, token });
+      .json({message: "User logged in successfully", user: data, token});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal server error" });
