@@ -12,7 +12,7 @@ export const adminAddProduct = async(req,res,next)=>{
     }
  
     const newProdut=new products({
-     title:result.title,
+     name:result.name,
      description:result.description,
      price:result.price,
      category:result.category,
@@ -78,9 +78,9 @@ export const adminUpdateproduct=async(req,res)=>{
         return res.status(404).json({messege:'product not found'})
     }
 
-    const {title,description,price,category}=req.body;
+    const {name,description,price,category}=req.body;
 
-    if(title)product.title=title;
+    if(name)product.name=name;
 
     if(description)product.description=description;
 
