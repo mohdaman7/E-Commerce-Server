@@ -5,13 +5,13 @@ config()
 
 export const adminToken=async(req,res,next)=>{
     try{
-        const token=req.header['authorization']
+        const token=req.headers['authorization']
 
         if(!token){
             return res.status(404).json({message:'admin token not provided'})
         }
 
-        JWT.verify(tocken,process.env.ADMIN_SECRET_KEY,(error,decode)=>{
+        JWT.verify(token,process.env.ADMIN_SECRET_KEY,(error,decode)=>{
             if(error){
                return  res.status(401).json({message:'Unauthorized'})
             }

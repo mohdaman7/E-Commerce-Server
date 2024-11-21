@@ -8,7 +8,7 @@ import Cart from "../models/cartModel.js";
 dotenv.config();
 
 const razorpay = new Razorpay({
-  key_id: Date.now,
+  key_id: process.env.Razorpay_key_id,
   key_secret: process.env.Razorpay_key_secret,
 });
 
@@ -31,8 +31,8 @@ export const payment = async (req, res) => {
     return (total += item.productId.price * item.quantity);
   }, 0);
 
-  const productNames = user.cart.map((item) => item.productId.title).join(", ");
-
+  const productNames = user.cart.map((item) => item.productId.name).join(", ");
+  
   const options = {
     amount: amount * 100, // amount in the smallest currency unit
     currency: "INR",
@@ -52,16 +52,19 @@ export const payment = async (req, res) => {
 };
 
 export const verifyPayment = async (req, res) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
-    req.body;
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
-  const hmac = crypto.createHmac("sha256", process.env.Razorpay_key_secret);
-  hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
-  const generatedSignature = hmac.digest("hex");
 
-  if (generatedSignature !== razorpay_signature) {
-    return res.status(400).send("verification failed");
-  }
+
+const hmac = crypto.createHmac("sha256", process.env.Razorpay_key_secret);
+hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
+const generatedSignature = hmac.digest("hex");
+
+
+if (generatedSignature !== razorpay_signature) {
+  console.error("Signature Mismatch!");
+  return res.status(400).send("Verification failed");
+}
 
   const order = await razorpay.orders.fetch(razorpay_order_id);
 

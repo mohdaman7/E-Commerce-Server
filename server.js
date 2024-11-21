@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import productRoutes from './routes/productRoutes.js'
 import authRoutes from './routes/authRoutes.js'
+import adminRoute from './routes/adminRoute.js'
 import { fileURLToPath} from 'url';
 import cors from 'cors'
 
@@ -24,6 +25,7 @@ app.use(express.json());
 
 app.use('/api/users', authRoutes);
 app.use('/api/users', productRoutes); 
+app.use('/api/admin',adminRoute);
 
 
 app.use(express.static(__dirname));

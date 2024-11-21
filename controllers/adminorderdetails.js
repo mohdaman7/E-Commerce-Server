@@ -1,4 +1,4 @@
-import orders from "razorpay/dist/types/orders";
+import Orders from "../models/orderModel.js"
 
 export const orderdetails=async (req,res)=>{
     const orders=await Orders.find().populate({
