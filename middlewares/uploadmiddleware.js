@@ -12,7 +12,7 @@ cloudinary.v2.config({
     api_secret: process.env.CLOUD_API_SECRET,
 });
 
-// Use multer memory storage (store in memory instead of disk)
+//Use multer memory storage (store in memory instead of disk)
 const storage = multer.memoryStorage();
 
 const upload = multer({

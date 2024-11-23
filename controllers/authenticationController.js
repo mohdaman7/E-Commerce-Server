@@ -57,11 +57,16 @@ export const login = async (req, res, next) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    if (isUserValid.isDeleted) {
+      return res.status(403).json({ error: "User is blocked" });
+    }
+
     const validPass = bcryptjs.compareSync(password, isUserValid.password);
 
     if (!validPass) {
       return res.status(404).json({ error: "Wrong credentials" });
     }
+
 
     // JWT setting
     const token = jwt.sign({ id: isUserValid._id }, process.env.JWT_SECRET);
