@@ -20,9 +20,10 @@ const productsSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    quantity:{
-
-    },
+    quantity: {
+        type: Number,
+        default: 1
+    },    
     isDeleted:{
         type:Boolean,
         default:false

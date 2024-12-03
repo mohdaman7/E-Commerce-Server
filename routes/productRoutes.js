@@ -9,16 +9,16 @@ import { payment,verifyPayment } from '../controllers/paymentController.js';
 const route = express.Router()
 
 //products
-
-route.use(userToken)
-route.get('/products',TryCatchMiddleware(viewproduct))
-
 route.get('/products/:id',TryCatchMiddleware(productById))
+route.get('/products',TryCatchMiddleware(viewproduct))
+route.use(userToken)
 route.get('/products/category/:categoryname',TryCatchMiddleware(productBycategory))
 
+
 //cart route
-route.get('/:id/cart',TryCatchMiddleware(viewCart)) //userId
+
 route.post('/:userId/cart/:productId',TryCatchMiddleware(addToCart))
+route.get('/:id/cart',TryCatchMiddleware(viewCart)) //userId
 route.patch('/:userId/cart/:id/increment',TryCatchMiddleware(incrementCartItemqunity))
 route.put('/:userId/cart/:id/decrement',TryCatchMiddleware(decrementCartItemquntity))
 route.delete('/:userId/cart/:productId/remove',TryCatchMiddleware(RemoveCart))

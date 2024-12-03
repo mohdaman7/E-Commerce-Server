@@ -1,5 +1,7 @@
 import products from "../models/productsModel.js";
 import User from "../models/userModel.js";
+import mongoose from "mongoose";
+
 
 export const viewproduct = async (req, res) => {
   const produt = await products.find();
@@ -18,8 +20,13 @@ export const viewproduct = async (req, res) => {
 };
 
 export const productById = async (req, res) => {
+
   const productId = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return res.status(400).json({ message: "Invalid ID format" });
+  }
   const product = await products.findById(productId);
+
   if (!product) {
     return res
       .status(404)

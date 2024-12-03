@@ -23,7 +23,7 @@ const upload = multer({
 // Middleware to upload image
 const uploadImage = (req, res, next) => {
     // Use the multer upload middleware
-    upload.single('image')(req, res, (error) => {
+    upload.single("image")(req, res, (error) => {
         if (error) {
             return res.status(400).json({ message: "File upload failed", error });
         }
@@ -48,7 +48,7 @@ const uploadImage = (req, res, next) => {
         } else {
             // return res.status(400).json({ message: "No file uploaded" });
             next()
-        }
+        } 
     });
 };
 

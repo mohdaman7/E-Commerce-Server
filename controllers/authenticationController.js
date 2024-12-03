@@ -7,10 +7,15 @@ import jwt from "jsonwebtoken";
 export const register = async (req, res, next) => {
   const { value, error } = usereauthjoi.validate(req.body);
   if (error) {
-    return res.status(400).json({ messege: "found validation error" });
+    console.log(error);
+    
+    return res.status(400).json({ messege: error.details[0].message || "found validation error" });
   }
 
+// console.log( req.cloudinaryImageUrl)
+ 
   const { username, email, password } = value;
+  // console.log(req.body)
   // console.log(username,email)
   try {
     const isExcistinguser = await User.findOne({ email: email });
@@ -31,13 +36,14 @@ export const register = async (req, res, next) => {
     });
 
     await newuser.save();
-
+    // console.log(newuser,'newwwwwwww');
+    
     return res
       .status(201)
       .json({
         status: "success",
         message: "User registered successfully",
-        data: newuser,
+        // data: newuser,
       });
   } catch (error) {
     res.status(500).json({ messege: "internel server error" });
@@ -45,7 +51,7 @@ export const register = async (req, res, next) => {
   }
 };
 
-//login session
+// login session
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
   try {

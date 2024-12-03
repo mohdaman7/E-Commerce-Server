@@ -32,7 +32,7 @@ export const payment = async (req, res) => {
   }, 0);
 
   const productNames = user.cart.map((item) => item.productId.name).join(", ");
-  
+
   const options = {
     amount: amount * 100, // amount in the smallest currency unit
     currency: "INR",
@@ -54,17 +54,14 @@ export const payment = async (req, res) => {
 export const verifyPayment = async (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
+  const hmac = crypto.createHmac("sha256", process.env.Razorpay_key_secret);
+  hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
+  const generatedSignature = hmac.digest("hex");
 
-
-const hmac = crypto.createHmac("sha256", process.env.Razorpay_key_secret);
-hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
-const generatedSignature = hmac.digest("hex");
-
-
-if (generatedSignature !== razorpay_signature) {
-  console.error("Signature Mismatch!");
-  return res.status(400).send("Verification failed");
-}
+  if (generatedSignature !== razorpay_signature) {
+    console.error("Signature Mismatch!");
+    return res.status(400).send("Verification failed");
+  }
 
   const order = await razorpay.orders.fetch(razorpay_order_id);
 
@@ -82,7 +79,7 @@ if (generatedSignature !== razorpay_signature) {
   //             productId: item.id,
   //             quantity: item.quantity,
   //             price: item.productId.price
-  //         })),
+  //  })),
 
   const newOrder = new Orders({
     userId: user.id,

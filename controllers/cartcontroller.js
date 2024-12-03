@@ -11,7 +11,7 @@ export const addToCart = async (req, res) => {
   if (!user) {
     return res.status(404).json({ messege: "user not found" });
   }
-  if (user.isDelted === true)
+  if (user.isDeleted === true)
     return res.status(210).json({ messege: "Admin blocked" });
   //find product
   const product = await products.findById(productId);
@@ -107,45 +107,47 @@ export const decrementCartItemquntity = async (req, res) => {
   const userId = req.params.userId;
   const productId = req.params.id;
 
-  //find user
+  // Find user
   const user = await User.findById(userId);
   if (!user) {
-    return res.status(404).json({ stats: "error", messege: "user not found" });
+    return res.status(404).json({ status: "error", message: "User not found" });
   }
-  //find product
+
+  // Find product
   const product = await products.findById(productId);
   if (!product) {
     return res
       .status(404)
-      .json({ status: "error", messege: "product not found" });
+      .json({ status: "error", message: "Product not found" });
   }
 
-  //find cart or create
-
+  // Find cart item
   const cartItem = await Cart.findOne({
     userId: user._id,
     productId: product._id,
   });
 
   if (!cartItem) {
-    return res.status(260).json({ messege: "cart item not found" });
+    return res
+      .status(404)
+      .json({ status: "error", message: "Cart item not found" });
   }
 
+  // Decrement quantity or remove item
   if (cartItem.quantity > 1) {
     cartItem.quantity--;
     await cartItem.save();
-
     return res
-      .status(201)
-      .json({ status: "ok", messege: "quntity decremented" });
-  }
+      .status(200)
+      .json({ status: "success", message: "Quantity decremented" });
+  } 
 };
+
 
 //remove cart
 
 export const RemoveCart = async (req, res) => {
   const { userId, productId } = req.params;
-
   const user = await User.findById(userId);
   if (!user) {
     return res.status(404).json({ messege: "user not found" });
@@ -166,6 +168,8 @@ export const RemoveCart = async (req, res) => {
   }
 
   // find thd index of the cartitme in the users cartitems array
+  
+  
 
   const cartItemIndex = user.cart.findIndex(
     (item) => item && item.equals(cartItem._id)
